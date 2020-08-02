@@ -15,16 +15,15 @@ function createServer (opts) {
   const server = http.createServer()
 
   server.on('request', function (request, response) {
-    const u = url.parse(request.url)
-    const host = url.parse(`http://${request.headers.host}`).hostname || 'localhost'
+    const host = new url.URL(`http://${request.headers.host}`).hostname || 'localhost'
 
     // Allow CORS requests to specify arbitrary headers, e.g. 'Range',
     // by responding to the OPTIONS preflight request with the specified
     // origin and requested headers.
-    if (request.method === 'OPTIONS' && request.headers[ 'access-control-request-headers' ]) {
+    if (request.method === 'OPTIONS' && request.headers['access-control-request-headers']) {
       response.setHeader('Access-Control-Allow-Origin', request.headers.origin)
       response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-      response.setHeader('Access-Control-Allow-Headers', request.headers[ 'access-control-request-headers' ])
+      response.setHeader('Access-Control-Allow-Headers', request.headers['access-control-request-headers'])
       response.setHeader('Access-Control-Max-Age', '1728000')
 
       response.end()
@@ -33,21 +32,21 @@ function createServer (opts) {
 
     if (request.headers.origin) response.setHeader('Access-Control-Allow-Origin', request.headers.origin)
 
-    if (request.method === 'GET' && u.pathname === '/') {
+    if (request.method === 'GET' && request.url === '/') {
       response.statusCode = 404
       response.end('Need torrent hash!')
       return
     }
 
     if (request.method === 'GET') {
-      if (u.pathname === '/status') {
+      if (request.url === '/status') {
         var bytes = function (num) {
           return numeral(num).format('0.0b')
         }
 
         let html = '<h1>Status</h1><ul>'
-        for (let key in activeServers) {
-          if (!activeServers.hasOwnProperty(key)) continue
+        for (const key in activeServers) {
+          if (!Object.prototype.hasOwnProperty.apply(activeServers, key)) continue
           const engine = activeServers[key].peerflix
           html += `
             <li>
@@ -73,7 +72,7 @@ function createServer (opts) {
         return
       }
 
-      parsetorrent.remote(u.pathname.slice(1), function (err, torrent) {
+      parsetorrent.remote(request.url.slice(1), function (err, torrent) {
         if (err) {
           response.statusCode = 400
           response.end(err.message)
@@ -83,7 +82,7 @@ function createServer (opts) {
         if (!(torrent.infoHash in activeServers)) {
           const shutdownServer = function () {
             engine.peerflix.remove(function () {
-              delete activeServers[ torrent.infoHash ]
+              delete activeServers[torrent.infoHash]
             })
           }
 
@@ -108,9 +107,9 @@ function createServer (opts) {
             })
           })
 
-          activeServers[ torrent.infoHash ] = engine
+          activeServers[torrent.infoHash] = engine
         } else {
-          engine = activeServers[ torrent.infoHash ]
+          engine = activeServers[torrent.infoHash]
         }
 
         function onListening () {
