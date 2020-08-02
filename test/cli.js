@@ -71,4 +71,12 @@ describe('peerflixer:cli', () => {
 
     assert.ok(response.headers['location'])
   })
+
+  it('should error on non torrent hash', async () => {
+    await run()
+
+    const { response } = await get('http://localhost:8080/IZZG2KNL4BKA7LYEKK5JAX6BQ27UV4QZKPL2JZQ')
+
+    assert.strictEqual(response.statusCode, 400)
+  })
 })
