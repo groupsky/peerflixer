@@ -6,7 +6,9 @@
   "bin": "cli/index.js",
   "scripts": {
     "dev": "nodemon cli/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "standard",
+    "pretest": "npm run lint",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,7 @@
     "yargs": "^11.0.0"
   },
   "devDependencies": {
+    "mocha": "^8.1.0",
     "nodemon": "^1.17.3",
     "standard": "^11.0.1"
   }
