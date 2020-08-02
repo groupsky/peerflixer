@@ -75,7 +75,7 @@ function createServer (opts) {
 
       parsetorrent.remote(u.pathname.slice(1), function (err, torrent) {
         if (err) {
-          response.statusCode = 401
+          response.statusCode = 400
           response.end(err.message)
           return
         }
