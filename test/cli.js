@@ -69,7 +69,7 @@ describe('peerflixer:cli', () => {
     // sintel torrent - any other torrent would suffice as long as there are seeders
     const { response } = await get('http://localhost:8080/08ada5a7a6183aae1e09d831df6748d566095a10')
 
-    assert.ok(response.headers['location'])
+    assert.ok(response.headers.location)
   })
 
   it('should error on non torrent hash', async () => {
