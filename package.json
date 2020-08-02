@@ -4,6 +4,10 @@
   "description": "Streaming torrent server",
   "main": "index.js",
   "bin": "cli/index.js",
+  "engines": {
+    "node": ">=10",
+    "npm": "~1"
+  },
   "files": [],
   "scripts": {
     "lint": "standard",
