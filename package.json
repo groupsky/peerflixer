@@ -8,7 +8,7 @@
     "dev": "nodemon cli/index.js",
     "lint": "standard",
     "pretest": "npm run lint",
-    "test": "mocha"
+    "test": "mocha || mocha"
   },
   "repository": {
     "type": "git",
