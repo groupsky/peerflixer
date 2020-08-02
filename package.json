@@ -4,6 +4,7 @@
   "description": "Streaming torrent server",
   "main": "index.js",
   "bin": "cli/index.js",
+  "files": [],
   "scripts": {
     "lint": "standard",
     "pretest": "npm run lint",
