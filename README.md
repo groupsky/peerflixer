@@ -1,5 +1,8 @@
 # peerflixer
 
+![CI](https://github.com/groupsky/peerflixer/workflows/CI/badge.svg)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=groupsky/peerflixer)](https://dependabot.com)
+
 Streaming torrent server.
 
 Based on [peerflix](https://github.com/mafintosh/peerflix).
