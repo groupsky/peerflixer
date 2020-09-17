@@ -17,6 +17,13 @@ function createServer (opts) {
   server.on('request', function (request, response) {
     const host = new url.URL(`http://${request.headers.host}`).hostname || 'localhost'
 
+    const error = (code, msg) => {
+      response.statusCode = code
+      response.setHeader('Content-Type', 'text/plain; charset=utf-8')
+      response.setHeader('Content-Length', Buffer.byteLength(msg))
+      response.end(msg)
+    }
+
     // Allow CORS requests to specify arbitrary headers, e.g. 'Range',
     // by responding to the OPTIONS preflight request with the specified
     // origin and requested headers.
@@ -33,14 +40,12 @@ function createServer (opts) {
     if (request.headers.origin) response.setHeader('Access-Control-Allow-Origin', request.headers.origin)
 
     if (request.method === 'GET' && request.url === '/') {
-      response.statusCode = 404
-      response.end('Need torrent hash!')
-      return
+      return error(404, 'Need torrent hash!')
     }
 
     if (request.method === 'GET') {
       if (request.url === '/status') {
-        var bytes = function (num) {
+        const bytes = function (num) {
           return numeral(num).format('0.0b')
         }
 
@@ -74,9 +79,7 @@ function createServer (opts) {
 
       parsetorrent.remote(request.url.slice(1), function (err, torrent) {
         if (err) {
-          response.statusCode = 400
-          response.end(err.message)
-          return
+          return error(400, err.message.toString())
         }
         let engine
         if (!(torrent.infoHash in activeServers)) {
@@ -131,8 +134,7 @@ function createServer (opts) {
     }
 
     console.error(`unhandled url ${request.method} ${request.url}`)
-    response.statusCode = 404
-    response.end()
+    error(404, 'Sorry, this is not available')
   })
 
   return server
